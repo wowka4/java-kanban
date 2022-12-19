@@ -2,9 +2,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Manager {
-    HashMap<Integer, Task> task = new HashMap<>();
-    HashMap<Integer, Epic> epic = new HashMap<>();
-    HashMap<Integer, Subtask> subtask = new HashMap<>();
+    private HashMap<Integer, Task> task = new HashMap<>();
+    private HashMap<Integer, Epic> epic = new HashMap<>();
+    private HashMap<Integer, Subtask> subtask = new HashMap<>();
     protected int nextId = 1;
 
     public void createEpic(String name, String description) {
@@ -17,20 +17,22 @@ public class Manager {
         task.put(nextId++, taskObject);
     }
 
-    public void createSubtask(String name, String description, int idOfTask) {
-        Subtask subtaskObject = new Subtask(nextId, name, description, "NEW", idOfTask);
+    public void createSubtask(String name, String description, int epicID) {
+        Subtask subtaskObject = new Subtask(nextId, name, description, "NEW", epicID);
         subtask.put(nextId, subtaskObject);
-        epic.get(idOfTask).addIdOfSubtask(nextId++);
+        epic.get(epicID).addSubtaskId(nextId++);
     }
 
-    public void updateTask(Task task1) {
-        task.put(task1.getId(), task1);
+    public void updateTask(Task newTask) {  //если без цифр, то тогда этот параметр у меня перекликается с полем класса
+        task.put(newTask.getId(), newTask); // и при попытке положить элемент в коллекцию у меня активируется не поле класса,
+        // а именно этот параметр. А так как я часто использую поле класса,очень неудобно будет его по другому назвать
+        // переназвал его newTask, может так лучше? Или лучше все-таки поменять на task  и переназвать поле класса?
     }
 
-    public void updateEpic(Epic epic1) {
+    public void updateEpic(Epic newEpic) {
         String newStatus = "";
-        for (int i = 0; i < epic1.idsSubtasks.size(); i++) {
-            int id = epic1.idsSubtasks.get(i);
+        for (int i = 0; i < newEpic.getSubtaskIds().size(); i++) {
+            int id = newEpic.getSubtaskIds().get(i);
             if (subtask.get(id).status.equals("DONE")) {
                 newStatus = "DONE";
             } else if (subtask.get(id).status.equals("IN_PROGRESS")) {
@@ -39,16 +41,16 @@ public class Manager {
                 newStatus = "NEW";
             }
         }
-        Epic epicNew = new Epic(epic1.getId(), epic1.getName(), epic1.getDescription(), newStatus);
-        for (int i = 0; i < epic1.idsSubtasks.size(); i++) {
-            int id = epic1.idsSubtasks.get(i);
-            epicNew.addIdOfSubtask(id);
+        Epic epicNew = new Epic(newEpic.getId(), newEpic.getName(), newEpic.getDescription(), newStatus);
+        for (int i = 0; i < newEpic.getSubtaskIds().size(); i++) {
+            int id = newEpic.getSubtaskIds().get(i);
+            epicNew.addSubtaskId(id);
         }
-        epic.put(epic1.getId(), epicNew);
+        epic.put(newEpic.getId(), epicNew);
     }
 
-    public void updateSubtask(Subtask subtask1) {
-        subtask.put(subtask1.getId(), subtask1);
+    public void updateSubtask(Subtask newSubtask) {
+        subtask.put(newSubtask.getId(), newSubtask);
     }
 
     public void printAllTask() {
@@ -57,8 +59,8 @@ public class Manager {
         }
         for (Integer key : epic.keySet()) {
             System.out.println(epic.get(key));
-            for (int i = 0; i < epic.get(key).idsSubtasks.size(); i++) {
-                int id = epic.get(key).idsSubtasks.get(i);
+            for (int i = 0; i < epic.get(key).getSubtaskIds().size(); i++) {
+                int id = epic.get(key).getSubtaskIds().get(i);
                 System.out.println(subtask.get(id));
             }
         }
@@ -95,7 +97,7 @@ public class Manager {
     }
 
     public void getSubtasksByEpic(int epicId) {
-        ArrayList<Integer> subsId = epic.get(epicId).getIdsSubtasks();
+        ArrayList<Integer> subsId = epic.get(epicId).getSubtaskIds();
         for (Integer number : subsId) {
             System.out.println(subtask.get(number));
         }

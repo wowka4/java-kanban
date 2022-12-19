@@ -1,15 +1,15 @@
 import java.util.Objects;
 
 public class Subtask extends Task {
-    protected int idOfTask;
+    private int epicId;
 
-    public Subtask(int id, String name, String description, String status, int idOfTask) {
+    public Subtask(int id, String name, String description, String status, int epicId) {
         super(id, name, description, status);
-        this.idOfTask = idOfTask;
+        this.epicId = epicId;
     }
 
-    public void setIdOfTask(int idOfTask) {
-        this.idOfTask = idOfTask;
+    public void setEpicId(int epicId) {
+        this.epicId = epicId;
     }
 
     @Override
@@ -19,12 +19,12 @@ public class Subtask extends Task {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", status='" + status + '\'' +
-                ", idOfTask=" + idOfTask +
+                ", epicId=" + epicId +
                 '}';
     }
 
     public int getIdOfTask() {
-        return idOfTask;
+        return epicId;
     }
 
     @Override
@@ -33,12 +33,12 @@ public class Subtask extends Task {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Subtask subtask = (Subtask) o;
-        return idOfTask == subtask.idOfTask;
+        return epicId == subtask.epicId;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), idOfTask);
+        return Objects.hash(super.hashCode(), epicId);
     }
 }
 
