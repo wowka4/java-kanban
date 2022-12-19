@@ -11,7 +11,8 @@ public class Main {
                 "потому что ты потратил все деньги на учебу java-разработке", 3);
         manager.createSubtask("Яблоки", "Купить яблоко за рубль, а продать его за два. " +
                 "Написать цикл while, и повторять его пока не накопится нужная сумма на авто.", 4);
+        manager.updateEpic(manager.getEpic(3));
 
-        manager.printAllTask();
+       manager.printAllTask();
     }
 }

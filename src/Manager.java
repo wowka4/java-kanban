@@ -7,18 +7,30 @@ public class Manager {
     private HashMap<Integer, Subtask> subtask = new HashMap<>();
     protected int nextId = 1;
 
+    public Task getTask(int id) {
+        return task.get(id);
+    }
+
+    public Epic getEpic(int id) {
+        return epic.get(id);
+    }
+
+    public Subtask getSubtask(int id) {
+        return subtask.get(id);
+    }
+
     public void createEpic(String name, String description) {
-        Epic epicObject = new Epic(nextId, name, description, "NEW");
+        Epic epicObject = new Epic(nextId, name, description, Status.NEW);
         epic.put(nextId++, epicObject);
     }
 
     public void createTask(String name, String description) {
-        Task taskObject = new Task(nextId, name, description, "NEW");
+        Task taskObject = new Task(nextId, name, description, Status.NEW);
         task.put(nextId++, taskObject);
     }
 
     public void createSubtask(String name, String description, int epicID) {
-        Subtask subtaskObject = new Subtask(nextId, name, description, "NEW", epicID);
+        Subtask subtaskObject = new Subtask(nextId, name, description, Status.NEW, epicID);
         subtask.put(nextId, subtaskObject);
         epic.get(epicID).addSubtaskId(nextId++);
     }
@@ -30,15 +42,15 @@ public class Manager {
     }
 
     public void updateEpic(Epic newEpic) {
-        String newStatus = "";
+        Status newStatus = null;
         for (int i = 0; i < newEpic.getSubtaskIds().size(); i++) {
             int id = newEpic.getSubtaskIds().get(i);
-            if (subtask.get(id).status.equals("DONE")) {
-                newStatus = "DONE";
-            } else if (subtask.get(id).status.equals("IN_PROGRESS")) {
-                newStatus = "IN_PROGRESS";
+            if (subtask.get(id).status.toString().equals(Status.DONE.toString())) {
+                newStatus = Status.DONE;
+            } else if (subtask.get(id).status.toString().equals(Status.IN_PROGRESS.toString())) {
+                newStatus = Status.IN_PROGRESS;
             } else {
-                newStatus = "NEW";
+                newStatus = Status.NEW;
             }
         }
         Epic epicNew = new Epic(newEpic.getId(), newEpic.getName(), newEpic.getDescription(), newStatus);
