@@ -23,7 +23,7 @@ public class Subtask extends Task {
                 '}';
     }
 
-    public int getIdOfTask() {
+    public int getEpicId() {
         return epicId;
     }
 

@@ -2,116 +2,114 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Manager {
-    private HashMap<Integer, Task> task = new HashMap<>();
-    private HashMap<Integer, Epic> epic = new HashMap<>();
-    private HashMap<Integer, Subtask> subtask = new HashMap<>();
+    private HashMap<Integer, Task> tasks = new HashMap<>();
+    private HashMap<Integer, Epic> epics = new HashMap<>();
+    private HashMap<Integer, Subtask> subtasks = new HashMap<>();
     protected int nextId = 1;
 
     public Task getTask(int id) {
-        return task.get(id);
+        return tasks.get(id);
     }
 
     public Epic getEpic(int id) {
-        return epic.get(id);
+        return epics.get(id);
     }
 
     public Subtask getSubtask(int id) {
-        return subtask.get(id);
+        return subtasks.get(id);
     }
 
     public void createEpic(String name, String description) {
         Epic epicObject = new Epic(nextId, name, description, Status.NEW);
-        epic.put(nextId++, epicObject);
+        epics.put(nextId++, epicObject);
     }
 
     public void createTask(String name, String description) {
         Task taskObject = new Task(nextId, name, description, Status.NEW);
-        task.put(nextId++, taskObject);
+        tasks.put(nextId++, taskObject);
     }
 
     public void createSubtask(String name, String description, int epicID) {
         Subtask subtaskObject = new Subtask(nextId, name, description, Status.NEW, epicID);
-        subtask.put(nextId, subtaskObject);
-        epic.get(epicID).addSubtaskId(nextId++);
+        subtasks.put(nextId, subtaskObject);
+        epics.get(epicID).addSubtaskId(nextId++);
     }
 
-    public void updateTask(Task newTask) {  //если без цифр, то тогда этот параметр у меня перекликается с полем класса
-        task.put(newTask.getId(), newTask); // и при попытке положить элемент в коллекцию у меня активируется не поле класса,
-        // а именно этот параметр. А так как я часто использую поле класса,очень неудобно будет его по другому назвать
-        // переназвал его newTask, может так лучше? Или лучше все-таки поменять на task  и переназвать поле класса?
+    public void updateTask(Task task) {
+        tasks.put(task.getId(), task);
     }
 
-    public void updateEpic(Epic newEpic) {
+    public void updateEpic(Epic epic) {
         Status newStatus = null;
-        for (int i = 0; i < newEpic.getSubtaskIds().size(); i++) {
-            int id = newEpic.getSubtaskIds().get(i);
-            if (subtask.get(id).status.toString().equals(Status.DONE.toString())) {
+        for (int i = 0; i < epic.getSubtaskIds().size(); i++) {
+            int id = epic.getSubtaskIds().get(i);
+            if (subtasks.get(id).status.toString().equals(Status.DONE.toString())) {
                 newStatus = Status.DONE;
-            } else if (subtask.get(id).status.toString().equals(Status.IN_PROGRESS.toString())) {
+            } else if (subtasks.get(id).status.toString().equals(Status.IN_PROGRESS.toString())) {
                 newStatus = Status.IN_PROGRESS;
             } else {
                 newStatus = Status.NEW;
             }
         }
-        Epic epicNew = new Epic(newEpic.getId(), newEpic.getName(), newEpic.getDescription(), newStatus);
-        for (int i = 0; i < newEpic.getSubtaskIds().size(); i++) {
-            int id = newEpic.getSubtaskIds().get(i);
+        Epic epicNew = new Epic(epic.getId(), epic.getName(), epic.getDescription(), newStatus);
+        for (int i = 0; i < epic.getSubtaskIds().size(); i++) {
+            int id = epic.getSubtaskIds().get(i);
             epicNew.addSubtaskId(id);
         }
-        epic.put(newEpic.getId(), epicNew);
+        epics.put(epic.getId(), epicNew);
     }
 
-    public void updateSubtask(Subtask newSubtask) {
-        subtask.put(newSubtask.getId(), newSubtask);
+    public void updateSubtask(Subtask subtask) {
+        subtasks.put(subtask.getId(), subtask);
     }
 
     public void printAllTask() {
-        for (Integer key : task.keySet()) {
-            System.out.println(task.get(key));
+        for (Integer key : tasks.keySet()) {
+            System.out.println(tasks.get(key));
         }
-        for (Integer key : epic.keySet()) {
-            System.out.println(epic.get(key));
-            for (int i = 0; i < epic.get(key).getSubtaskIds().size(); i++) {
-                int id = epic.get(key).getSubtaskIds().get(i);
-                System.out.println(subtask.get(id));
+        for (Integer key : epics.keySet()) {
+            System.out.println(epics.get(key));
+            for (int i = 0; i < epics.get(key).getSubtaskIds().size(); i++) {
+                int id = epics.get(key).getSubtaskIds().get(i);
+                System.out.println(subtasks.get(id));
             }
         }
     }
 
     public void removeAllTasks() {
-        task.clear();
-        epic.clear();
-        subtask.clear();
+        tasks.clear();
+        epics.clear();
+        subtasks.clear();
     }
 
     public void getById(int id) {
-        if (task.containsKey(id)) {
-            System.out.println(task.get(id));
-        } else if (epic.containsKey(id)) {
-            System.out.println(epic.get(id));
-        } else if (subtask.containsKey(id)) {
-            System.out.println(subtask.get(id));
+        if (tasks.containsKey(id)) {
+            System.out.println(tasks.get(id));
+        } else if (epics.containsKey(id)) {
+            System.out.println(epics.get(id));
+        } else if (subtasks.containsKey(id)) {
+            System.out.println(subtasks.get(id));
         } else {
             System.out.println("Идентификатор не найден");
         }
     }
 
     public void removeById(int id) {
-        if (task.containsKey(id)) {
-            task.remove(id);
-        } else if (epic.containsKey(id)) {
-            epic.remove(id);
-        } else if (subtask.containsKey(id)) {
-            subtask.remove(id);
+        if (tasks.containsKey(id)) {
+            tasks.remove(id);
+        } else if (epics.containsKey(id)) {
+            epics.remove(id);
+        } else if (subtasks.containsKey(id)) {
+            subtasks.remove(id);
         } else {
             System.out.println("Идентификатор не найден");
         }
     }
 
     public void getSubtasksByEpic(int epicId) {
-        ArrayList<Integer> subsId = epic.get(epicId).getSubtaskIds();
+        ArrayList<Integer> subsId = epics.get(epicId).getSubtaskIds();
         for (Integer number : subsId) {
-            System.out.println(subtask.get(number));
+            System.out.println(subtasks.get(number));
         }
     }
 }
