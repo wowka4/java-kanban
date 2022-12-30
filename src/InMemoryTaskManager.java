@@ -1,7 +1,9 @@
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
-public class Manager {
+public class InMemoryTaskManager implements TaskManager {
+    HistoryManager historyManager = Managers.getDefaultHistory();
     private HashMap<Integer, Task> tasks = new HashMap<>();
     private HashMap<Integer, Epic> epics = new HashMap<>();
     private HashMap<Integer, Subtask> subtasks = new HashMap<>();
@@ -19,26 +21,31 @@ public class Manager {
         return subtasks.get(id);
     }
 
+    @Override
     public void createEpic(String name, String description) {
         Epic epicObject = new Epic(nextId, name, description, Status.NEW);
         epics.put(nextId++, epicObject);
     }
 
+    @Override
     public void createTask(String name, String description) {
         Task taskObject = new Task(nextId, name, description, Status.NEW);
         tasks.put(nextId++, taskObject);
     }
 
+    @Override
     public void createSubtask(String name, String description, int epicID) {
         Subtask subtaskObject = new Subtask(nextId, name, description, Status.NEW, epicID);
         subtasks.put(nextId, subtaskObject);
         epics.get(epicID).addSubtaskId(nextId++);
     }
 
+    @Override
     public void updateTask(Task task) {
         tasks.put(task.getId(), task);
     }
 
+    @Override
     public void updateEpic(Epic epic) {
         Status newStatus = null;
         for (int i = 0; i < epic.getSubtaskIds().size(); i++) {
@@ -59,10 +66,12 @@ public class Manager {
         epics.put(epic.getId(), epicNew);
     }
 
+    @Override
     public void updateSubtask(Subtask subtask) {
         subtasks.put(subtask.getId(), subtask);
     }
 
+    @Override
     public void printAllTask() {
         for (Integer key : tasks.keySet()) {
             System.out.println(tasks.get(key));
@@ -76,24 +85,30 @@ public class Manager {
         }
     }
 
+    @Override
     public void removeAllTasks() {
         tasks.clear();
         epics.clear();
         subtasks.clear();
     }
 
+    @Override
     public void getById(int id) {
         if (tasks.containsKey(id)) {
+            historyManager.add(tasks.get(id));
             System.out.println(tasks.get(id));
         } else if (epics.containsKey(id)) {
+            historyManager.add(epics.get(id));
             System.out.println(epics.get(id));
         } else if (subtasks.containsKey(id)) {
+            historyManager.add(subtasks.get(id));
             System.out.println(subtasks.get(id));
         } else {
             System.out.println("Идентификатор не найден");
         }
     }
 
+    @Override
     public void removeById(int id) {
         if (tasks.containsKey(id)) {
             tasks.remove(id);
@@ -106,10 +121,16 @@ public class Manager {
         }
     }
 
+    @Override
     public void getSubtasksByEpic(int epicId) {
         ArrayList<Integer> subsId = epics.get(epicId).getSubtaskIds();
         for (Integer number : subsId) {
             System.out.println(subtasks.get(number));
         }
+    }
+
+    @Override
+    public void getHistory() {
+        historyManager.getHistory();
     }
 }
