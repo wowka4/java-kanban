@@ -1,3 +1,5 @@
+package model;
+
 import java.util.Objects;
 
 public class Task {
@@ -67,4 +69,5 @@ public class Task {
     public int hashCode() {
         return Objects.hash(id, name, description, status);
     }
+
 }

@@ -1,13 +1,19 @@
+package service;
+
+import model.Epic;
+import model.Status;
+import model.Subtask;
+import model.Task;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
-    HistoryManager historyManager = Managers.getDefaultHistory();
+    private HistoryManager historyManager = Managers.getDefaultHistory();
     private HashMap<Integer, Task> tasks = new HashMap<>();
     private HashMap<Integer, Epic> epics = new HashMap<>();
     private HashMap<Integer, Subtask> subtasks = new HashMap<>();
-    protected int nextId = 1;
+    private int nextId = 1;
 
     public Task getTask(int id) {
         return tasks.get(id);
@@ -50,9 +56,9 @@ public class InMemoryTaskManager implements TaskManager {
         Status newStatus = null;
         for (int i = 0; i < epic.getSubtaskIds().size(); i++) {
             int id = epic.getSubtaskIds().get(i);
-            if (subtasks.get(id).status.toString().equals(Status.DONE.toString())) {
+            if (subtasks.get(id).getStatus() == Status.DONE) {
                 newStatus = Status.DONE;
-            } else if (subtasks.get(id).status.toString().equals(Status.IN_PROGRESS.toString())) {
+            } else if (subtasks.get(id).getStatus() == Status.IN_PROGRESS) {
                 newStatus = Status.IN_PROGRESS;
             } else {
                 newStatus = Status.NEW;

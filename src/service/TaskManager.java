@@ -1,3 +1,9 @@
+package service;
+
+import model.Epic;
+import model.Subtask;
+import model.Task;
+
 public interface TaskManager {
     void printAllTask();
 
