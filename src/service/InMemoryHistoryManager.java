@@ -2,26 +2,59 @@ package service;
 
 import model.Task;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    private static final int HISTORY_SIZE = 10;
+    private Node tail;
+    private int size = 0;
+    private HashMap<Integer, Node> nodes = new HashMap<>();
 
-    private List<Task> viewHistory = new ArrayList<>();
-
-    @Override
     public void add(Task task) {
-        if (viewHistory.size() > HISTORY_SIZE) {
-            viewHistory.remove(0);
-            viewHistory.add(task);
+        if (nodes.containsKey(task.getId())) {
+            removeNode(nodes.get(task.getId()));
+            nodes.remove(task.getId());
+        }
+        nodes.put(task.getId(), linkLast(task));
+    }
+
+    public Node linkLast(Task task) {
+        Node newNode = new Node(null, task, null);
+        if (!nodes.isEmpty()) {
+            Node oldTail = tail;
+            newNode.prevTask = oldTail;
+            oldTail.nextTask = newNode;
+        }
+        tail = newNode;
+        size++;
+        return newNode;
+    }
+
+    public void removeNode(Node node) {
+        if (node.nextTask == null) {
+            tail = node.prevTask;
+            tail.nextTask = null;
+        } else if (node.prevTask == null) {
+            node.nextTask.prevTask = null;
+            node.nextTask = null;
         } else {
-            viewHistory.add(task);
+            node.nextTask.prevTask = node.prevTask;
+            node.prevTask.nextTask = node.nextTask;
         }
     }
 
     @Override
-    public List<Task> getHistory() {
+    public void remove(int id) {
+        removeNode(nodes.get(id));
+        nodes.remove(id);
+    }
+
+    public List<Task> getTasks() {
+        List<Task> viewHistory = new ArrayList<>();
+        Node node = tail;
+        while (node != null) {
+            viewHistory.add(node.data);
+            node = node.prevTask;
+        }
         return viewHistory;
     }
 }
