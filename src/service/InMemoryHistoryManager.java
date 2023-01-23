@@ -17,43 +17,51 @@ public class InMemoryHistoryManager implements HistoryManager {
         nodes.put(task.getId(), linkLast(task));
     }
 
-    public Node linkLast(Task task) {
+    private Node linkLast(Task task) {
         Node newNode = new Node(null, task, null);
         if (!nodes.isEmpty()) {
             Node oldTail = tail;
-            newNode.prevTask = oldTail;
-            oldTail.nextTask = newNode;
+            newNode.setPrevTask(oldTail);
+            oldTail.setNextTask(newNode);
         }
         tail = newNode;
         size++;
         return newNode;
     }
 
-    public void removeNode(Node node) {
-        if (node.nextTask == null) {
-            tail = node.prevTask;
-            tail.nextTask = null;
-        } else if (node.prevTask == null) {
-            node.nextTask.prevTask = null;
-            node.nextTask = null;
+    private void removeNode(Node node) {
+        if (node.getNextTask() == null) {
+            if (node.getPrevTask() == null) {
+                tail = null;
+                return;
+            }
+            tail = node.getPrevTask();
+            tail.setNextTask(null);
+        } else if (node.getPrevTask() == null) {
+            node.getNextTask().setPrevTask(null);
+            node.setNextTask(null);
         } else {
-            node.nextTask.prevTask = node.prevTask;
-            node.prevTask.nextTask = node.nextTask;
+            node.getPrevTask().setNextTask(node.getNextTask());
+            node.getNextTask().setPrevTask(node.getPrevTask());
         }
     }
 
     @Override
     public void remove(int id) {
-        removeNode(nodes.get(id));
-        nodes.remove(id);
+        if (nodes.containsKey(id)) {
+            removeNode(nodes.get(id));
+            nodes.remove(id);
+        }
     }
 
     public List<Task> getTasks() {
         List<Task> viewHistory = new ArrayList<>();
-        Node node = tail;
-        while (node != null) {
-            viewHistory.add(node.data);
-            node = node.prevTask;
+        if (!nodes.isEmpty()) {
+            Node node = tail;
+            while (node != null) {
+                viewHistory.add(node.getData());
+                node = node.getPrevTask();
+            }
         }
         return viewHistory;
     }

@@ -18,10 +18,9 @@ public class Main {
         taskManager.getById(1);
         taskManager.getById(2);
         taskManager.getById(3);
-        taskManager.getById(4);
-        taskManager.getById(5);
-        taskManager.getById(5);
-        taskManager.getById(2);
+//        taskManager.getById(4);
+//        taskManager.getById(5);
+//        taskManager.getById(2);
         System.out.println();
         System.out.println(" Get History ");
         taskManager.getHistory();
@@ -31,7 +30,5 @@ public class Main {
         taskManager.removeById(2);
         System.out.println(" Get History ");
         taskManager.getHistory();
-
-
     }
 }

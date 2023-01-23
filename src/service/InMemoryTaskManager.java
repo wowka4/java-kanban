@@ -106,6 +106,9 @@ public class InMemoryTaskManager implements TaskManager {
         } else if (epics.containsKey(id)) {
             historyManager.add(epics.get(id));
             System.out.println(epics.get(id));
+            if (!epics.get(id).getSubtaskIds().isEmpty()) {
+                getSubtasksByEpic(id);
+            }
         } else if (subtasks.containsKey(id)) {
             historyManager.add(subtasks.get(id));
             System.out.println(subtasks.get(id));
