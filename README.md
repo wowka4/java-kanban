@@ -1,7 +1,5 @@
-# My Own Kanban Project.  
-## *This project will help you to plan your day*.  
-### ~This app is so boring~
-## *This app can:*  
-1. Make a task.  
-2. Make a subtask.  
-Thank you for your interest!  
+# To Do приложение 
+## Это приложение умеет:  
+1. Добавлять эпики(задача без подзадачи)  
+2. Добавлять задачи
+3. Добавлять к задачам подзадачи.  
